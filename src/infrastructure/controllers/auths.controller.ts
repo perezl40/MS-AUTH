@@ -11,6 +11,7 @@ export class AuthsController {
 
   @GrpcMethod(AUTH_SERVICE_NAME, 'CcmsLogin')
   ccmslogin(payload: LoginRequestDto): Promise<LoginResponseDto> {
+    console.log('payload', payload)
     return this._ccmsLoginPorts.handle(payload)
   }
 }

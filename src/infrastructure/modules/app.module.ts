@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 
 import { environments, config, JoiValidationSchema } from '../config'
 import { GlobalMiddleware } from '../middlewares/global.middleware'
+import { AuthsModule } from './auths.module'
 
 @Module({
   imports: [
@@ -12,12 +13,9 @@ import { GlobalMiddleware } from '../middlewares/global.middleware'
       validationSchema: JoiValidationSchema,
       isGlobal: true,
     }),
+    AuthsModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(GlobalMiddleware).forRoutes('*')
-  }
-}
+export class AppModule {}

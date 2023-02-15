@@ -6,10 +6,7 @@ import { join } from 'path'
 
 import { AppModule } from './infrastructure/modules/app.module'
 import { configApp } from './infrastructure/config/'
-import {
-  protobufPackage,
-  AUTH_PACKAGE_NAME,
-} from './infrastructure/proto/auth.pb'
+import { AUTH_PACKAGE_NAME } from './infrastructure/proto/auth.pb'
 
 async function bootstrap() {
   const app: INestMicroservice = await NestFactory.createMicroservice(
@@ -17,10 +14,10 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        url: process.env.MS_AUTH_URL,
+        url: 'localhost:5001',
         package: AUTH_PACKAGE_NAME,
         protoPath: join('node_modules/grpc-ms-proto/proto/auth.proto'),
-        port: process.env.PORT,
+        port: 5001,
       },
     },
   )
