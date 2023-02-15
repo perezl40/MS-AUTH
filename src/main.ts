@@ -1,24 +1,39 @@
+import { INestMicroservice, Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { Logger } from '@nestjs/common'
+import { Transport } from '@nestjs/microservices'
 import { ConfigService } from '@nestjs/config'
+import { join } from 'path'
 
 import { AppModule } from './infrastructure/modules/app.module'
-import { configApp, configSwagger } from './infrastructure/config/'
+import { configApp } from './infrastructure/config/'
+import {
+  protobufPackage,
+  AUTH_PACKAGE_NAME,
+} from './infrastructure/proto/auth.pb'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app: INestMicroservice = await NestFactory.createMicroservice(
+    AppModule,
+    {
+      transport: Transport.GRPC,
+      options: {
+        url: process.env.MS_AUTH_URL,
+        package: AUTH_PACKAGE_NAME,
+        protoPath: join('node_modules/grpc-ms-proto/proto/auth.proto'),
+        port: process.env.PORT,
+      },
+    },
+  )
+
   const configService = app.get(ConfigService)
 
-  app.setGlobalPrefix('api')
   configApp(app, configService)
-  configSwagger(app)
 
-  const port = configService.get<number>('AppConfiguration.port')
   Logger.verbose(
-    `on port: ${port} with environment: ${process.env.NODE_ENV}`.toUpperCase(),
+    `Microservice run with environment: ${process.env.NODE_ENV}`.toUpperCase(),
     'STARTUP',
   )
 
-  await app.listen(port)
+  await app.listen()
 }
 bootstrap()
