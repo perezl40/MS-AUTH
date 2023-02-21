@@ -2,11 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { RpcException } from '@nestjs/microservices'
 import { status } from '@grpc/grpc-js'
 
-import {
-  CcmsLoginResponse,
-  CcmsLoginRequest,
-  bodyResponse,
-} from '../../domain/dtos/auth'
+import { CcmsLoginResponse, CcmsLoginRequest } from '../../domain/dtos/auth'
 import { IauthService } from '../../domain/services/auth/iauth.service'
 import {
   NotFoundMSException,
@@ -21,7 +17,7 @@ export class AuthsService implements IauthService {
   async ccmsLogin(
     loginRequestDto: CcmsLoginRequest,
   ): Promise<CcmsLoginResponse> {
-    const userResponseDto: bodyResponse = {
+    const userResponseDto: CcmsLoginResponse = {
       idccms: 111111,
       username: loginRequestDto.username,
       name: 'name',
@@ -30,10 +26,7 @@ export class AuthsService implements IauthService {
       photo: 'photo',
       token: loginRequestDto.accessToken,
     }
-    // return {
-    //   data: userResponseDto,
-    //   error: [],
-    // }
+    // return userResponseDto
 
     throw new BadRequestMSException('Error')
     throw new NotFoundMSException('no se encontro')

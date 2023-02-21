@@ -13,11 +13,6 @@ export interface CcmsLoginRequest {
 }
 
 export interface CcmsLoginResponse {
-  data?: bodyResponse | undefined
-  error: ErrorDetails[]
-}
-
-export interface bodyResponse {
   idccms?: number | undefined
   username?: string | undefined
   name?: string | undefined
@@ -25,11 +20,6 @@ export interface bodyResponse {
   rol?: string | undefined
   photo?: string | undefined
   token?: string | undefined
-}
-
-export interface ErrorDetails {
-  error: string[]
-  code: string
 }
 
 export const AUTH_PACKAGE_NAME = 'auth'
