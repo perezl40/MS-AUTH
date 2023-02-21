@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { LoginRequestDto, LoginResponseDto } from '../../domain/dtos/auth'
+import { CcmsLoginRequest, CcmsLoginResponse } from '../../domain/dtos/auth'
 import { IccmsLoginPorts } from '../../domain/ports/auth'
 import { IauthService } from '../../domain/services/auth/iauth.service'
 
@@ -8,7 +8,7 @@ import { IauthService } from '../../domain/services/auth/iauth.service'
 export class CCMSLoginUseCase implements IccmsLoginPorts {
   constructor(private readonly _authsService: IauthService) {}
 
-  async handle(loginRequestDto: LoginRequestDto): Promise<LoginResponseDto> {
+  async handle(loginRequestDto: CcmsLoginRequest): Promise<CcmsLoginResponse> {
     return await this._authsService.ccmsLogin(loginRequestDto)
   }
 }

@@ -1,9 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 
 import { environments, config, JoiValidationSchema } from '../config'
-import { GlobalMiddleware } from '../middlewares/global.middleware'
 import { AuthsModule } from './auths.module'
+import { APP_FILTER } from '@nestjs/core'
+import { HttpExceptionFilter } from '../filter/http-exception.filter'
 
 @Module({
   imports: [
@@ -16,6 +17,11 @@ import { AuthsModule } from './auths.module'
     AuthsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

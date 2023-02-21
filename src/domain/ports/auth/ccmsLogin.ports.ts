@@ -1,5 +1,5 @@
-import { LoginRequestDto, LoginResponseDto } from '../../dtos/auth/login.dto'
+import { CcmsLoginRequest, CcmsLoginResponse } from '../../dtos/auth/'
 
 export abstract class IccmsLoginPorts {
-  abstract handle(loginRequestDto: LoginRequestDto): Promise<LoginResponseDto>
+  abstract handle(loginRequestDto: CcmsLoginRequest): Promise<CcmsLoginResponse>
 }

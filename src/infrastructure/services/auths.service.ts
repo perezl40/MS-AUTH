@@ -1,14 +1,27 @@
 import { Injectable } from '@nestjs/common'
+import { RpcException } from '@nestjs/microservices'
+import { status } from '@grpc/grpc-js'
 
-import { LoginRequestDto } from '../../domain/dtos/auth'
+import {
+  CcmsLoginResponse,
+  CcmsLoginRequest,
+  bodyResponse,
+} from '../../domain/dtos/auth'
 import { IauthService } from '../../domain/services/auth/iauth.service'
-import { CcmsLoginResponse } from '../proto/auth.pb'
+import {
+  NotFoundMSException,
+  InternalMSException,
+  GenericMSException,
+  UnaterizedMSException,
+  PermissionDeniedMSException,
+  BadRequestMSException,
+} from '../../domain/dtos/exceptions/customErrorResponse'
 @Injectable()
 export class AuthsService implements IauthService {
   async ccmsLogin(
-    loginRequestDto: LoginRequestDto,
+    loginRequestDto: CcmsLoginRequest,
   ): Promise<CcmsLoginResponse> {
-    const userResponseDto: CcmsLoginResponse = {
+    const userResponseDto: bodyResponse = {
       idccms: 111111,
       username: loginRequestDto.username,
       name: 'name',
@@ -17,8 +30,20 @@ export class AuthsService implements IauthService {
       photo: 'photo',
       token: loginRequestDto.accessToken,
     }
+    // return {
+    //   data: userResponseDto,
+    //   error: [],
+    // }
 
-    return userResponseDto
+    throw new BadRequestMSException('Error')
+    throw new NotFoundMSException('no se encontro')
+    throw new InternalMSException('Problemas con el servidor')
+    throw new PermissionDeniedMSException('Permiso denegado')
+    throw new UnaterizedMSException('no autorizado')
+    throw new GenericMSException(
+      'Error Personalizado',
+      status.PERMISSION_DENIED,
+    )
   }
 
   validateToken(): Promise<any> {

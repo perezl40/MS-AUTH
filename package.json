@@ -21,7 +21,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "proto:install": "pnpm i git+https://github.com/perezl40/grpc-ms-proto.git",
-    "proto:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/grpc-ms-proto/proto --ts_proto_out=src/infrastructure/proto/ node_modules/grpc-ms-proto/proto/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/grpc-ms-proto/proto --ts_proto_out=src/domain/dtos/auth node_modules/grpc-ms-proto/proto/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
     "proto:all": "pnpm run proto:install && pnpm run proto:auth"
   },
   "dependencies": {
