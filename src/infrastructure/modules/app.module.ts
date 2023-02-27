@@ -5,7 +5,7 @@ import { environments, config, JoiValidationSchema } from '../config'
 import { AuthsModule } from './auths.module'
 import { APP_FILTER } from '@nestjs/core'
 import { HttpExceptionFilter } from '../filter/http-exception.filter'
-import { DatabaseModule } from './database.module';
+import { DatabaseModule } from './database.module'
 import { HttpModule } from '@nestjs/axios'
 
 @Global()

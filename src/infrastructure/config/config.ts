@@ -11,10 +11,10 @@ export const config = registerAs('AppConfiguration', () => ({
     password: process.env.SQL_PASSWORD,
     user: process.env.SQL_USERNAME,
     instance: process.env.INSTANCE,
-    host: process.env.IP_SQL
+    host: process.env.IP_SQL,
   },
-  auth:{
+  auth: {
     secret: process.env.SECRET_KEY,
-    expider: process.env.EXPIRED_IN
-  }
-}));
+    expider: process.env.EXPIRED_IN,
+  },
+}))

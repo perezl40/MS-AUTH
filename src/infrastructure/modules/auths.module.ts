@@ -29,25 +29,25 @@ import { config } from '../config'
         return {
           secret: configService.auth.secret,
           signOptions: {
-            expiresIn: configService.auth.expider
+            expiresIn: configService.auth.expider,
           },
         }
       },
-    })
+    }),
   ],
   exports: [
-    IccmsLoginPorts, 
+    IccmsLoginPorts,
     IauthService,
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigType<typeof config>) => {
         return {
           secret: configService.auth.secret,
           signOptions: {
-            expiresIn: configService.auth.expider
+            expiresIn: configService.auth.expider,
           },
         }
       },
-    })
+    }),
   ],
   providers: [
     {

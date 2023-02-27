@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsString, IsOptional } from 'class-validator'
 
-
-class CampaignsDto{
+export class CampaignsDto {
   id?: number
   campaign?: string
   powerBiName?: string
@@ -9,7 +8,7 @@ class CampaignsDto{
   reportPowerBi?: string
 }
 
-class LoginDto{
+export class LoginDto {
   idccms?: number
   username?: string
   name?: string

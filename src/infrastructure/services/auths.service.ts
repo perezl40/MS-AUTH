@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { HttpService } from '@nestjs/axios';
+import { HttpService } from '@nestjs/axios'
 import { lastValueFrom } from 'rxjs'
 
 import { CcmsLoginResponse, CcmsLoginRequest } from '../../domain/dtos/auth'
@@ -12,17 +12,21 @@ import {
   PermissionDeniedMSException,
   BadRequestMSException,
 } from '../../domain/dtos/exceptions/customErrorResponse'
-import { DatabaseService } from './database.service';
-import { JwtService } from '@nestjs/jwt';
-import { DataSource } from 'typeorm';
-import { LoginRequestDto, LoginResponseDto } from '../../domain/dtos/auth/login.dto';
-import { TbTmsAccessCampaigns } from '../models/TbTmsAccessCampaigns';
-import { TbTmsUsersCharges } from '../models/TbTmsUsersCharges';
-import { TbTmsUsers } from '../models/TbTmsUsers';
+import { DatabaseService } from './database.service'
+import { JwtService } from '@nestjs/jwt'
+import { DataSource } from 'typeorm'
+import {
+  CampaignsDto,
+  LoginDto,
+  LoginRequestDto,
+  LoginResponseDto,
+} from '../../domain/dtos/auth/login.dto'
+import { TbTmsAccessCampaigns } from '../models/TbTmsAccessCampaigns'
+import { TbTmsUsersCharges } from '../models/TbTmsUsersCharges'
+import { TbTmsUsers } from '../models/TbTmsUsers'
 
 @Injectable()
 export class AuthsService implements IauthService {
-
   constructor(
     private httpService: HttpService,
     private databaseService: DatabaseService,
@@ -33,130 +37,135 @@ export class AuthsService implements IauthService {
   async ccmsLogin(
     loginRequestDto: LoginRequestDto,
   ): Promise<CcmsLoginResponse> {
-
     const config = {
       method: 'get',
       headers: {
         Authorization: `Bearer ${loginRequestDto.accessToken}`,
       },
-    };
-
-    let login : CcmsLoginResponse['login'];
-    let campaigns: LoginResponseDto['campaigns'] = [];
-    let mfo: {user: string} = {
-      user: loginRequestDto.username,
-    };
-
-    if (process.env.ENABLE_CRYPTO === 'true') {
-      await lastValueFrom(this.httpService.get(process.env.API_AUTH, config))
-        .then(async (res:any) => {
-          mfo = {
-            user: res?.data?.userPrincipalName.split('@')[0],
-          };
-        })
-        .catch(err => {
-          throw new BadRequestMSException(
-            `Error the username or password is incorrect..`
-          );
-        });
     }
 
-    await this.databaseService.spInfoUser(mfo.user)
-    .then(async resSpPosition => {
-      for await (const iterator of resSpPosition) {
-        login = {
-          idccms: iterator.idccms,
-          username: iterator.idlogin,
-          name: iterator.username,
-          charge: iterator.fullname,
-          photo: '',
-        };
-      }
-    });
+    let login: LoginDto
+    let campaigns: CampaignsDto[] = []
+    let mfo: { user: string } = {
+      user: loginRequestDto.username,
+    }
 
-    await this.databaseService.spLogin(login.idccms)
-    .then(async resSpLogin => {
-      try {
-        // Rols
-        login.rol = await this.generateUserRol(login);
-        // CreateToken
-        login.token = this.createToken(login);
-        // Campaigns
-        campaigns = await this.campaigns(resSpLogin, login);
-        
-      } catch (err) {
-        throw new BadRequestMSException(`Failed to generate info user.`)
-      }
-    }).catch(err => {
-      throw new BadRequestMSException(`Error when querying the user's campaigns.`)
-    });
+    // TODO: en este punto no llega info encryptada, solo al api gateway
+    if (process.env.ENABLE_CRYPTO === 'true') {
+      await lastValueFrom(this.httpService.get(process.env.API_AUTH, config))
+        .then(async (res: any) => {
+          mfo = {
+            user: res?.data?.userPrincipalName.split('@')[0],
+          }
+        })
+        .catch((err) => {
+          throw new BadRequestMSException(
+            `Error the username or password is incorrect..`,
+          )
+        })
+    }
+
+    // Si estas usando el Async/await, por  que lo resuelves como promesa?
+    await this.databaseService
+      .spInfoUser(mfo.user)
+      .then(async (resSpPosition) => {
+        for await (const iterator of resSpPosition) {
+          login = {
+            idccms: iterator.idccms,
+            username: iterator.idlogin,
+            name: iterator.username,
+            charge: iterator.fullname,
+            photo: '',
+          }
+        }
+      })
+
+    await this.databaseService
+      .spLogin(login.idccms)
+      .then(async (resSpLogin) => {
+        try {
+          // Rols
+          login.rol = await this.generateUserRol(login)
+          // CreateToken
+          login.token = this.createToken(login)
+          // Campaigns
+          campaigns = await this.campaigns(resSpLogin, login)
+        } catch (err) {
+          throw new BadRequestMSException(`Failed to generate info user.`)
+        }
+      })
+      .catch((err) => {
+        throw new BadRequestMSException(
+          `Error when querying the user's campaigns.`,
+        )
+      })
 
     return {
       login,
-      campaigns
+      campaigns,
     }
   }
 
   createToken(payload: any): string {
-    return this.jwtTokenService.sign(payload);
+    return this.jwtTokenService.sign(payload)
   }
 
   async campaigns(resSpLogin: any, login: LoginResponseDto['login']) {
     try {
-
-      const idclients: any = [];
-      let userCampaigns: LoginResponseDto['campaigns'] = [];
-      let accessCampaign = false;
+      const idclients: any = []
+      const userCampaigns: CampaignsDto[] = []
+      let accessCampaign = false
 
       for await (const iterator of resSpLogin) {
-        idclients.push(iterator.idclient);
+        idclients.push(iterator.idclient)
         if (iterator.nameClient.includes('Teleperformance')) {
-          accessCampaign = true;
+          accessCampaign = true
         }
       }
 
       const clientsAccessQuery: any = await this.connection
-        .getRepository(TbTmsAccessCampaigns).createQueryBuilder('access')
+        .getRepository(TbTmsAccessCampaigns)
+        .createQueryBuilder('access')
         .select('access.idclient, access.status')
         .where('idccms = :idccms', { idccms: login.idccms })
-      .execute();
-        
+        .execute()
+
       for await (const iterator of clientsAccessQuery) {
-        if(idclients.includes(iterator.idclient) && iterator.status){
-          idclients.push(iterator.idclient);
+        if (idclients.includes(iterator.idclient) && iterator.status) {
+          idclients.push(iterator.idclient)
         }
       }
 
-      await this.databaseService.spCampaign().then(async campaigns => {
+      await this.databaseService.spCampaign().then(async (campaigns) => {
         // eslint-disable-next-line array-callback-return
         await campaigns.map(async (element: any) => {
-
-          let status = 'false';
+          let status = 'false'
 
           let accessCampaigns: any = this.connection
-          .getRepository(TbTmsAccessCampaigns)
-          .findOne({
-            where: {
-              idccms: login.idccms,
-              idclient: element.id,
-            },
-          });
+            .getRepository(TbTmsAccessCampaigns)
+            .findOne({
+              where: {
+                idccms: login.idccms,
+                idclient: element.id,
+              },
+            })
 
           if (idclients.includes(element.id) || accessCampaign) {
-              status = 'true';
+            status = 'true'
           }
 
           if (!accessCampaigns) {
-            accessCampaigns = new TbTmsAccessCampaigns();
+            accessCampaigns = new TbTmsAccessCampaigns()
           }
-  
-          accessCampaigns.idccms = login.idccms;
-          accessCampaigns.idclient = element.id;
-          accessCampaigns.status = status;
 
-          this.connection.getRepository(TbTmsAccessCampaigns).save(accessCampaigns);
+          accessCampaigns.idccms = login.idccms
+          accessCampaigns.idclient = element.id
+          accessCampaigns.status = status
 
-        });
+          this.connection
+            .getRepository(TbTmsAccessCampaigns)
+            .save(accessCampaigns)
+        })
 
         await campaigns.map((element: any) => {
           if (idclients.includes(element.id) || accessCampaign) {
@@ -167,31 +176,32 @@ export class AuthsService implements IauthService {
                 powerBiName: element.powerBiName,
                 powerBiURL: element.powerBiURL,
                 reportPowerBi: element.reportPowerBi,
-              });
+              })
             }
           }
-        });
-      });
+        })
+      })
 
-      return userCampaigns;
-
-    } catch (err) { 
-      throw new BadRequestMSException(`Error when querying the user's campaigns.`)
+      return userCampaigns
+    } catch (err) {
+      throw new BadRequestMSException(
+        `Error when querying the user's campaigns.`,
+      )
     }
   }
 
   async generateUserRol(login: LoginResponseDto['login']) {
     try {
-      let rol: any;
-      let name: string;
-      let user: TbTmsUsers;
+      let rol: any
+      let name: string
+      let user: TbTmsUsers
 
       user = await this.connection.getRepository(TbTmsUsers).findOne({
         where: {
           idccms: login.idccms,
         },
         relations: ['role'],
-      });
+      })
 
       if (!user) {
         // Buscar cargo del usuario y su relacion con el rol
@@ -202,38 +212,37 @@ export class AuthsService implements IauthService {
               charge: login.charge,
             },
             relations: ['role'],
-          });
+          })
 
         if (charges) {
-          rol = charges.role.id;
-          name = charges.role.rol;
+          rol = charges.role.id
+          name = charges.role.rol
         } else {
-          rol = 2;
-          name = 'lead';
+          rol = 2
+          name = 'lead'
         }
 
         // Crear nuevo usuario
-        user = new TbTmsUsers();
+        user = new TbTmsUsers()
 
         // Parametros
-        user.idccms = login.idccms;
-        user.charge = login.charge;
-        user.username = login.username;
-        user.role = rol;
+        user.idccms = login.idccms
+        user.charge = login.charge
+        user.username = login.username
+        user.role = rol
 
-        await this.connection.getRepository(TbTmsUsers).save(user);
+        await this.connection.getRepository(TbTmsUsers).save(user)
       } else {
-        name = user.role.rol;
+        name = user.role.rol
       }
 
-      return name;
+      return name
     } catch (err) {
       throw new BadRequestMSException(`Error when querying the user role.`)
     }
   }
 
   validateToken(): Promise<any> {
-    
     // throw new BadRequestMSException('Error')
     // throw new NotFoundMSException('no se encontro')
     // throw new InternalMSException('Problemas con el servidor')
