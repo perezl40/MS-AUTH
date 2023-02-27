@@ -33,7 +33,6 @@ export interface CampaignsResponse {
   powerBiName?: string | undefined;
   powerBiURL?: string | undefined;
   reportPowerBi?: string | undefined;
-  market?: string | undefined;
 }
 
 export interface ValidateTokenRequest {
