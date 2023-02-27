@@ -110,7 +110,7 @@ export class AuthsService implements IauthService {
     return this.jwtTokenService.sign(payload)
   }
 
-  async campaigns(resSpLogin: any, login: LoginResponseDto['login']) {
+  async campaigns(resSpLogin: any, login: LoginDto): Promise<CampaignsDto[]> {
     try {
       const idclients: any = []
       const userCampaigns: CampaignsDto[] = []
