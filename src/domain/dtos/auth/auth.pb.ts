@@ -14,7 +14,7 @@ export interface CcmsLoginRequest {
 
 export interface CcmsLoginResponse {
   login: LoginResponse | undefined;
-  campaigns: CampaignsResponse | undefined;
+  campaigns: CampaignsResponse[];
 }
 
 export interface LoginResponse {
