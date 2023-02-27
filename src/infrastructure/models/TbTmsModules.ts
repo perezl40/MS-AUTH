@@ -4,31 +4,31 @@ import {
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { TbTmsPermissions } from './TbTmsPermissions';
+} from 'typeorm'
+import { TbTmsPermissions } from './TbTmsPermissions'
 
 @Index('PK__TMStbMod__3213E83F42126E77', ['id'], { unique: true })
 @Entity('tbTMSModules', { schema: 'dbo' })
 export class TbTmsModules {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
-  id: number;
+  id: number
 
   @Column('varchar', { name: 'name', length: 50 })
-  name: string;
+  name: string
 
   @Column('varchar', { name: 'status', length: 20, default: () => "'active'" })
-  status: string;
+  status: string
 
   @Column('datetime', {
     name: 'creation',
     nullable: true,
     default: () => 'getdate()',
   })
-  creation: Date | null;
+  creation: Date | null
 
   @OneToMany(
     () => TbTmsPermissions,
-    tbTmsPermissions => tbTmsPermissions.module,
+    (tbTmsPermissions) => tbTmsPermissions.module,
   )
-  tbTmsPermissions: TbTmsPermissions[];
+  tbTmsPermissions: TbTmsPermissions[]
 }

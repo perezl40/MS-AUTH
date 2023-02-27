@@ -4,39 +4,39 @@ import {
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { TbTmsRolePermissions } from './TbTmsRolePermissions';
-import { TbTmsUsers } from './TbTmsUsers';
-import { TbTmsUsersCharges } from './TbTmsUsersCharges';
+} from 'typeorm'
+import { TbTmsRolePermissions } from './TbTmsRolePermissions'
+import { TbTmsUsers } from './TbTmsUsers'
+import { TbTmsUsersCharges } from './TbTmsUsersCharges'
 
 @Index('PK__TMSRols__3213E83FB59C46D5', ['id'], { unique: true })
 @Index('UQ__TMSRols__C2B79D262DA7503E', ['rol'], { unique: true })
 @Entity('tbTMSRols', { schema: 'dbo' })
 export class TbTmsRols {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
-  id: number;
+  id: number
 
   @Column('varchar', { name: 'rol', unique: true, length: 50 })
-  rol: string;
+  rol: string
 
   @Column('varchar', { name: 'status', length: 50 })
-  status: string;
+  status: string
 
   @Column('date', { name: 'creation', default: () => 'getdate()' })
-  creation: Date;
+  creation: Date
 
   @OneToMany(
     () => TbTmsRolePermissions,
-    tbTmsRolePermissions => tbTmsRolePermissions.role,
+    (tbTmsRolePermissions) => tbTmsRolePermissions.role,
   )
-  tbTmsRolePermissions: TbTmsRolePermissions[];
+  tbTmsRolePermissions: TbTmsRolePermissions[]
 
-  @OneToMany(() => TbTmsUsers, tbTmsUsers => tbTmsUsers.role)
-  tbTmsUsers: TbTmsUsers[];
+  @OneToMany(() => TbTmsUsers, (tbTmsUsers) => tbTmsUsers.role)
+  tbTmsUsers: TbTmsUsers[]
 
   @OneToMany(
     () => TbTmsUsersCharges,
-    tbTmsUsersCharges => tbTmsUsersCharges.role,
+    (tbTmsUsersCharges) => tbTmsUsersCharges.role,
   )
-  tbTmsUsersCharges: TbTmsUsersCharges[];
+  tbTmsUsersCharges: TbTmsUsersCharges[]
 }
