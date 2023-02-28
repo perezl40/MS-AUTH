@@ -13,11 +13,11 @@ export interface CcmsLoginRequest {
 }
 
 export interface CcmsLoginResponse {
-  login: LoginResponse | undefined;
-  campaigns: CampaignsResponse[];
+  login: Login | undefined;
+  campaigns: Campaign[];
 }
 
-export interface LoginResponse {
+export interface Login {
   idccms?: number | undefined;
   username?: string | undefined;
   name?: string | undefined;
@@ -27,7 +27,7 @@ export interface LoginResponse {
   token?: string | undefined;
 }
 
-export interface CampaignsResponse {
+export interface Campaign {
   id?: number | undefined;
   campaign?: string | undefined;
   powerBiName?: string | undefined;
