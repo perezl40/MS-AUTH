@@ -15,13 +15,6 @@ import { TbTmsUsersCharges } from '../models/TbTmsUsersCharges'
 @Global()
 @Module({
   imports: [
-    // TODO: No es necesario este forRoot en el modulo prncipal se importa
-    ConfigModule.forRoot({
-      envFilePath: environments[process.env.NODE_ENV] || environments.dev,
-      load: [config],
-      validationSchema: JoiValidationSchema,
-      isGlobal: true,
-    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [config.KEY],
