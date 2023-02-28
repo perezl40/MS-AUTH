@@ -15,40 +15,40 @@ import { TbTmsUsersCharges } from '../models/TbTmsUsersCharges'
 @Global()
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [config.KEY],
-      useFactory: async (configService: ConfigType<typeof config>) => {
-        const { database, password, user, instance, host } =
-          configService.connectionDataBase
-        return {
-          type: 'mssql',
-          database,
-          host: `${host}\\${instance}`,
-          username: user,
-          password,
-          synchronize: false,
-          entities: [
-            TbTmsAccessCampaigns,
-            TbTmsClient,
-            TbTmsModules,
-            TbTmsPermissions,
-            TbTmsRolePermissions,
-            TbTmsRols,
-            TbTmsUsers,
-            TbTmsUsersCharges,
-          ],
-          autoLoadEntities: false,
-          requestTimeout: 15000,
-          logging: false,
-          extra: {
-            trustServerCertificate: true,
-          },
-        }
-      },
-    }),
+    // TypeOrmModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [config.KEY],
+    //   useFactory: async (configService: ConfigType<typeof config>) => {
+    //     const { database, password, user, instance, host } =
+    //       configService.connectionDataBase
+    //     return {
+    //       type: 'mssql',
+    //       database,
+    //       host: `${host}\\${instance}`,
+    //       username: user,
+    //       password,
+    //       synchronize: false,
+    //       entities: [
+    //         TbTmsAccessCampaigns,
+    //         TbTmsClient,
+    //         TbTmsModules,
+    //         TbTmsPermissions,
+    //         TbTmsRolePermissions,
+    //         TbTmsRols,
+    //         TbTmsUsers,
+    //         TbTmsUsersCharges,
+    //       ],
+    //       autoLoadEntities: false,
+    //       requestTimeout: 15000,
+    //       logging: false,
+    //       extra: {
+    //         trustServerCertificate: true,
+    //       },
+    //     }
+    //   },
+    // }),
   ],
-  exports: [DatabaseService],
-  providers: [DatabaseService],
+  // exports: [DatabaseService],
+  // providers: [DatabaseService],
 })
 export class DatabaseModule {}
