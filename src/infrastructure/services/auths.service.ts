@@ -136,12 +136,14 @@ export class AuthsService implements IauthService {
       .select('access.idclient, access.status')
       .where('idccms = :idccms', { idccms: login.idccms })
       .execute()
+
     for (const iterator of clientsAccessQuery) {
       if (idclients.includes(iterator.idclient) && iterator.status) {
         idclients.push(iterator.idclient)
       }
     }
     const campaigns = await this.databaseService.spCampaign()
+
     campaigns.map(async (element: any) => {
       let status = 'false'
       let accessCampaigns: any = this.connection
@@ -165,7 +167,7 @@ export class AuthsService implements IauthService {
         .getRepository(TbTmsAccessCampaigns)
         .save(accessCampaigns)
     })
-    const camList = campaigns.map((element: any): Campaign => {
+    const camList: Campaign[] = campaigns.map((element: any) => {
       if (idclients.includes(element.id) || accessCampaign) {
         if (element.fullname) {
           return {
@@ -177,7 +179,7 @@ export class AuthsService implements IauthService {
           }
         }
       }
-    }) as Campaign[]
+    })
     console.log(camList)
     return camList
   }
