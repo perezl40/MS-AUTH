@@ -71,7 +71,7 @@ dependencies:
   class-transformer: 0.5.1
   class-validator: 0.14.0
   express: 4.18.2
-  grpc-ms-proto: github.com/perezl40/grpc-ms-proto/595ad67afcae9e2cef7ff38ab573c8330e3e55bc
+  grpc-ms-proto: github.com/perezl40/grpc-ms-proto/b6aaadf67654c2c0268f803233c848870248c84f
   joi: 17.7.1
   mssql: 9.1.1
   passport: 0.6.0
@@ -6392,8 +6392,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/perezl40/grpc-ms-proto/595ad67afcae9e2cef7ff38ab573c8330e3e55bc:
-    resolution: {tarball: https://codeload.github.com/perezl40/grpc-ms-proto/tar.gz/595ad67afcae9e2cef7ff38ab573c8330e3e55bc}
+  github.com/perezl40/grpc-ms-proto/b6aaadf67654c2c0268f803233c848870248c84f:
+    resolution: {tarball: https://codeload.github.com/perezl40/grpc-ms-proto/tar.gz/b6aaadf67654c2c0268f803233c848870248c84f}
     name: grpc-ms-proto
     version: 1.0.0
     dev: false

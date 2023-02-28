@@ -7,16 +7,6 @@ export const protobufPackage = "auth";
 /** proto/auth.proto */
 
 /** CcmsLogin */
-export interface CcmsLoginRequest {
-  accessToken: string;
-  username?: string | undefined;
-}
-
-export interface CcmsLoginResponse {
-  login: Login | undefined;
-  campaigns: Campaign[];
-}
-
 export interface Login {
   idccms?: number | undefined;
   username?: string | undefined;
@@ -35,6 +25,17 @@ export interface Campaign {
   reportPowerBi?: string | undefined;
 }
 
+export interface CcmsLoginRequest {
+  accessToken: string;
+  username?: string | undefined;
+}
+
+export interface CcmsLoginResponse {
+  login: Login | undefined;
+  campaigns: Campaign[];
+}
+
+/** Validate Token */
 export interface ValidateTokenRequest {
   token: string;
 }
